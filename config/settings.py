@@ -29,8 +29,10 @@ import dj_database_url
 # Database configuration
 # - Production: Railway provides DATABASE_URL -> PostgreSQL (host/port/user/ssl handled).
 # - Local dev: no DATABASE_URL -> SQLite, so the app runs without the remote database.
-# .strip() guards against a stray trailing space/newline in the env var, which would
-# otherwise make the DB name e.g. "railway " and fail with 'database does not exist'.
+# Railway's DATABASE_URL carries a stray space in the db name (it connects but
+# fails with: database "railway " does not exist). Strip the whole URL for any
+# leading/trailing whitespace, then strip the parsed connection fields so a space
+# sitting *inside* the URL (e.g. before a ?query) still can't break the connection.
 _database_url = os.environ.get('DATABASE_URL', '').strip()
 DATABASES = {
     'default': dj_database_url.parse(
@@ -38,6 +40,9 @@ DATABASES = {
         conn_max_age=600,
     )
 }
+for _key in ('NAME', 'HOST', 'USER'):
+    if isinstance(DATABASES['default'].get(_key), str):
+        DATABASES['default'][_key] = DATABASES['default'][_key].strip()
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
