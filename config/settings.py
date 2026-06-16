@@ -29,9 +29,12 @@ import dj_database_url
 # Database configuration
 # - Production: Railway provides DATABASE_URL -> PostgreSQL (host/port/user/ssl handled).
 # - Local dev: no DATABASE_URL -> SQLite, so the app runs without the remote database.
+# .strip() guards against a stray trailing space/newline in the env var, which would
+# otherwise make the DB name e.g. "railway " and fail with 'database does not exist'.
+_database_url = os.environ.get('DATABASE_URL', '').strip()
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+    'default': dj_database_url.parse(
+        _database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
     )
 }
