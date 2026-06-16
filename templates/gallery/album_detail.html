@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ album.title }}{% endblock %}
+{% block content %}
+
+<div class="mb-4">
+  <h3><i class="bi bi-collection-fill text-info me-2"></i>{{ album.title }}</h3>
+  {% if album.description %}
+  <p class="text-muted">{{ album.description }}</p>
+  {% endif %}
+  <small class="text-muted">
+    By {{ album.owner.username }} &bull; {{ album.photo_count }} photos
+  </small>
+</div>
+
+{% if photos %}
+<div class="row row-cols-2 row-cols-md-4 g-3">
+  {% for photo in photos %}
+  <div class="col">
+    <a href="{% url 'photo-detail' photo.pk %}">
+      <img src="{{ photo.image.url }}" class="img-fluid rounded shadow-sm gallery-img" alt="{{ photo.title }}"/>
+    </a>
+    <p class="small text-truncate mt-1">{{ photo.title }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+  <i class="bi bi-images display-1"></i>
+  <p class="mt-3">No photos in this album yet.</p>
+</div>
+{% endif %}
+
+<a href="{% url 'album-list' %}" class="btn btn-outline-secondary mt-4">
+  <i class="bi bi-arrow-left"></i> Back to Albums
+</a>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ photo.title }}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <!-- Photo -->
+  <div class="col-md-8">
+    <img src="{{ photo.image.url }}" class="img-fluid rounded shadow" alt="{{ photo.title }}"/>
+  </div>
+
+  <!-- Info Panel -->
+  <div class="col-md-4 mt-3 mt-md-0">
+    <h3>{{ photo.title }}</h3>
+    <p class="text-muted">
+      <i class="bi bi-person-fill"></i> {{ photo.owner.username }} &nbsp;|&nbsp;
+      <i class="bi bi-calendar"></i> {{ photo.uploaded_at|date:"M d, Y" }}
+    </p>
+
+    {% if photo.album %}
+    <p>
+      <i class="bi bi-collection-fill text-info"></i>
+      <a href="{% url 'album-detail' photo.album.pk %}">{{ photo.album.title }}</a>
+    </p>
+    {% endif %}
+
+    {% if photo.description %}
+    <p class="mt-2">{{ photo.description }}</p>
+    {% endif %}
+
+    <!-- Like Button -->
+    <div class="mt-3">
+      {% if user.is_authenticated %}
+      <a href="{% url 'photo-like' photo.pk %}" class="btn btn-outline-danger">
+        <i class="bi bi-heart-fill"></i>
+        {% if user in photo.likes.all %}Unlike{% else %}Like{% endif %}
+        ({{ photo.total_likes }})
+      </a>
+      {% else %}
+      <span class="text-muted">
+        <i class="bi bi-heart-fill text-danger"></i> {{ photo.total_likes }} likes
+      </span>
+      {% endif %}
+    </div>
+
+    <!-- Owner Actions -->
+    {% if user == photo.owner %}
+    <div class="mt-4 d-flex gap-2">
+      <form method="POST" action="{% url 'photo-delete' photo.pk %}"
+            onsubmit="return confirm('Delete this photo?')">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-sm">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Gallery
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

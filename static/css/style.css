@@ -1,0 +1,40 @@
+/* Gallery Image */
+.gallery-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+/* Photo Card Hover */
+.photo-card {
+  overflow: hidden;
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease;
+}
+
+.photo-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.photo-card:hover .gallery-img {
+  transform: scale(1.04);
+}
+
+/* Auth Container */
+.auth-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Navbar Brand */
+.navbar-brand {
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+/* Form Control */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+}
