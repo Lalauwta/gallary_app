@@ -24,33 +24,17 @@ CSRF_TRUSTED_ORIGINS = [
     if x.strip()
 ]
 
-from urllib.parse import urlparse
+import dj_database_url
 
-# Database configuration - prefer a single DATABASE_URL env var, fallback to individual DB_* vars
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    parsed = urlparse(DATABASE_URL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': parsed.path[1:],
-            'USER': parsed.username,
-            'PASSWORD': parsed.password,
-            'HOST': parsed.hostname,
-            'PORT': parsed.port,
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'railway'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', 'roundhouse.proxy.rlwy.net'),
-            'PORT': os.environ.get('DB_PORT', '35670'),
-        }
-    }
+# Database configuration
+# - Production: Railway provides DATABASE_URL -> PostgreSQL (host/port/user/ssl handled).
+# - Local dev: no DATABASE_URL -> SQLite, so the app runs without the remote database.
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+    )
+}
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
