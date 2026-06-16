@@ -37,7 +37,7 @@ class RegisterForm(UserCreationForm):
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Enter username',
-            'pattern': '[A-Za-z0-9@.+\-_]{1,150}',
+            'pattern': r'[A-Za-z0-9@.+\-_]{1,150}',
             'title': '150 chars max. Letters, digits and @ . + - _ only'
         })
     )
