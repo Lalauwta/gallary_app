@@ -1,5 +1,4 @@
-{% extends "base.html" %} {% block title %}{{ album.title }} - Gallery{%
-endblock %} {% block content %}
+{% extends "base.html" %} {% block title %}{{ album.title }} - Gallery{% endblock %} {% block content %}
 
 <!-- Album Header -->
 <div
@@ -38,8 +37,7 @@ endblock %} {% block content %}
         <i class="bi bi-person-circle"></i> By
         <strong>{{ album.owner.username }}</strong> &nbsp; | &nbsp;
         <i class="bi bi-images"></i>
-        <strong>{{ album.photo_count }}</strong> photo{% if album.photo_count !=
-        1 %}s{% endif %}
+        <strong>{{ album.photo_count }}</strong> photo{% if album.photo_count != 1 %}s{% endif %}
       </p>
     </div>
   </div>

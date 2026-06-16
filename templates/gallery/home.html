@@ -60,10 +60,8 @@
       <i class="bi bi-images"></i> All Photos {% endif %}
     </h3>
     <p class="text-muted mb-0">
-      {% if query %} Found <strong>{{ photos.count }}</strong> photo{% if
-      photos.count != 1 %}s{% endif %} matching "{{ query }}" {% else %}
-      <strong>{{ photos.count }}</strong> photo{% if photos.count != 1 %}s{%
-      endif %} in gallery {% endif %}
+      {% if query %} Found <strong>{{ photos.count }}</strong> photo{% if photos.count != 1 %}s{% endif %} matching "{{ query }}" {% else %}
+      <strong>{{ photos.count }}</strong> photo{% if photos.count != 1 %}s{% endif %} in gallery {% endif %}
     </p>
   </div>
   {% if user.is_authenticated and not query %}
@@ -102,8 +100,7 @@
       </p>
       <div class="photo-meta">
         <span title="{{ photo.owner.username }}">
-          <i class="bi bi-person-circle"></i> {{
-          photo.owner.username|truncatechars:12 }}
+          <i class="bi bi-person-circle"></i> {{ photo.owner.username|truncatechars:12 }}
         </span>
         <span title="Likes">
           <i class="bi bi-heart-fill text-danger"></i> {{ photo.likes.count }}
