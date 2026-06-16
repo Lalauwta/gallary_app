@@ -10,12 +10,8 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,gallaryapp-production.up.railway.app').split(',')
 
 # CSRF Configuration
-CSRF_TRUSTED_ORIGINS = [
-    'https://gallaryapp-production.up.railway.app',
-    'https://*.railway.app',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
+csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://gallaryapp-production.up.railway.app,https://*.railway.app,http://localhost:8000,http://127.0.0.1:8000')
+CSRF_TRUSTED_ORIGINS = csrf_origins.split(',') if isinstance(csrf_origins, str) else csrf_origins
 
 INSTALLED_APPS = [
     'django.contrib.admin',
