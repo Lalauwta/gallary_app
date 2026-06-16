@@ -1,34 +1,120 @@
-{% extends "base.html" %}
-{% block title %}Create Album{% endblock %}
+{% extends "base.html" %} {% block title %}Create Album - Gallery{% endblock %}
 {% block content %}
 
 <div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card shadow-sm border-0">
+  <div class="col-md-7 col-lg-6">
+    <div class="card border-0 shadow" style="overflow: hidden">
+      <!-- Header -->
+      <div
+        style="
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: #fff;
+          padding: 2rem;
+        "
+      >
+        <h2 class="mb-1"><i class="bi bi-collection-fill"></i> Create Album</h2>
+        <p class="mb-0" style="opacity: 0.9">
+          Organize your photos into collections
+        </p>
+      </div>
+
+      <!-- Form -->
       <div class="card-body p-4">
-        <h3 class="mb-4">
-          <i class="bi bi-collection-fill text-info me-2"></i>Create Album
-        </h3>
         <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          {% for field in form %}
-          <div class="mb-3">
-            <label class="form-label fw-semibold">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}
-            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
-            {% endif %}
+
+          <!-- Title Field -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">{{ form.title.label }}</label>
+            {% if form.title.errors %}
+            <div class="alert alert-danger alert-sm p-2 mb-2" role="alert">
+              {{ form.title.errors.0 }}
+            </div>
+            {% endif %} {{ form.title }}
+            <small class="text-muted d-block mt-2"
+              >Give your album a meaningful title</small
+            >
           </div>
-          {% endfor %}
-          <div class="d-grid mt-3">
-            <button type="submit" class="btn btn-info text-white btn-lg">
-              <i class="bi bi-plus-circle me-1"></i> Create Album
+
+          <!-- Description Field -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold"
+              >{{ form.description.label }}</label
+            >
+            {% if form.description.errors %}
+            <div class="alert alert-danger alert-sm p-2 mb-2" role="alert">
+              {{ form.description.errors.0 }}
+            </div>
+            {% endif %} {{ form.description }}
+            <small class="text-muted d-block mt-2"
+              >Tell people what this album is about</small
+            >
+          </div>
+
+          <!-- Cover Photo Field -->
+          {% if form.cover_photo %}
+          <div class="mb-4">
+            <label class="form-label fw-semibold"
+              >{{ form.cover_photo.label }}</label
+            >
+            {% if form.cover_photo.errors %}
+            <div class="alert alert-danger alert-sm p-2 mb-2" role="alert">
+              {{ form.cover_photo.errors.0 }}
+            </div>
+            {% endif %} {{ form.cover_photo }}
+            <small class="text-muted d-block mt-2"
+              >Optional: Choose a cover image for your album</small
+            >
+          </div>
+          {% endif %}
+
+          <!-- Submit Buttons -->
+          <div class="d-grid gap-2 mt-5">
+            <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+              <i class="bi bi-plus-circle me-2"></i> Create Album
             </button>
+            <a href="{% url 'albums' %}" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle me-1"></i> Cancel
+            </a>
           </div>
         </form>
       </div>
     </div>
+
+    <!-- Tips -->
+    <div class="alert alert-info mt-4" role="alert">
+      <h6 class="alert-heading mb-2">
+        <i class="bi bi-lightbulb"></i> Album Tips
+      </h6>
+      <ul class="mb-0 small">
+        <li>Use descriptive names for easy browsing</li>
+        <li>Select a cover photo that represents the album</li>
+        <li>Add a description to help people understand the collection</li>
+        <li>You can add photos to the album after creation</li>
+      </ul>
+    </div>
   </div>
 </div>
+
+<style>
+  #id_cover_photo {
+    display: block;
+    padding: 0.75rem;
+    width: 100%;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #id_cover_photo:hover {
+    border-color: #0d6efd;
+    background: rgba(13, 110, 253, 0.05);
+  }
+
+  .form-label {
+    color: #1a1a2e;
+  }
+</style>
 
 {% endblock %}
