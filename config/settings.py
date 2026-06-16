@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,gallaryapp-production.up.railway.app').split(',')
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,gallaryapp-production.up.railway.app').split(',') if h.strip()]
 
 # CSRF Configuration
 CSRF_TRUSTED_ORIGINS = [
@@ -15,7 +16,54 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
+csrf_env = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if csrf_env:
+    CSRF_TRUSTED_ORIGINS = [x.strip() for x in csrf_env.split(',') if x.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        'https://gallaryapp-production.up.railway.app',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
 
+from urllib.parse import urlparse
+
+# Database configuration - prefer a single DATABASE_URL env var, fallback to individual DB_* vars
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    parsed = urlparse(DATABASE_URL)
+    DB_NAME = parsed.path[1:]
+    DB_USER = parsed.username
+    DB_PASSWORD = parsed.password
+    DB_HOST = parsed.hostname
+    DB_PORT = parsed.port
+    scheme = parsed.scheme
+    if scheme.startswith('postgres'):
+        engine = 'django.db.backends.postgresql'
+    else:
+        engine = 'django.db.backends.postgresql'
+
+    DATABASES = {
+        'default': {
+            'ENGINE': engine,
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'railway'),
+            'USER': os.environ.get('DB_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'roundhouse.proxy.rlwy.net'),
+            'PORT': os.environ.get('DB_PORT', '35670'),
+        }
+    }
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
