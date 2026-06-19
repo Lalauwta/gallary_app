@@ -33,3 +33,16 @@ class Photo(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+
+
+class Comment(models.Model):
+    photo      = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
+    author     = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    body       = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.author.username} on {self.photo.title}'

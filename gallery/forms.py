@@ -1,5 +1,5 @@
 from django import forms
-from .models import Photo, Album
+from .models import Photo, Album, Comment
 
 
 class PhotoUploadForm(forms.ModelForm):
@@ -42,3 +42,17 @@ class AlbumForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model  = Comment
+        fields = ['body']
+        widgets = {
+            'body': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Write a comment...',
+            }),
+        }
+        labels = {'body': ''}

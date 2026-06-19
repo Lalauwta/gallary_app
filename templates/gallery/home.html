@@ -105,6 +105,9 @@
         <span title="Likes">
           <i class="bi bi-heart-fill text-danger"></i> {{ photo.likes.count }}
         </span>
+        <span title="Comments">
+          <i class="bi bi-chat-left-text"></i> {{ photo.comments.count }}
+        </span>
         <span title="Upload date" class="ms-auto">
           <i class="bi bi-calendar3"></i> {{ photo.uploaded_at|date:"M d" }}
         </span>

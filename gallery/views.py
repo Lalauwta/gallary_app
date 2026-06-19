@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-from .models import Photo, Album
-from .forms import PhotoUploadForm, AlbumForm
+from .models import Photo, Album, Comment
+from .forms import PhotoUploadForm, AlbumForm, CommentForm
 
 
 # ── Home / Gallery ────────────────────────────────────────
@@ -27,7 +27,41 @@ def home(request):
 # ── Photo Detail ──────────────────────────────────────────
 def photo_detail(request, pk):
     photo = get_object_or_404(Photo, pk=pk)
-    return render(request, 'gallery/photo_detail.html', {'photo': photo})
+    form  = CommentForm()
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.photo  = photo
+            comment.author = request.user
+            comment.save()
+            messages.success(request, 'Comment posted! 💬')
+            return redirect('photo-detail', pk=photo.pk)
+
+    comments = photo.comments.select_related('author')
+    return render(request, 'gallery/photo_detail.html', {
+        'photo': photo,
+        'form': form,
+        'comments': comments,
+    })
+
+
+# ── Delete Comment ────────────────────────────────────────
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    # The comment author or the photo owner may remove a comment.
+    if request.user != comment.author and request.user != comment.photo.owner:
+        messages.error(request, "You can't delete that comment.")
+        return redirect('photo-detail', pk=comment.photo.pk)
+    photo_pk = comment.photo.pk
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, 'Comment deleted.')
+    return redirect('photo-detail', pk=photo_pk)
 
 
 # ── Upload Photo ──────────────────────────────────────────

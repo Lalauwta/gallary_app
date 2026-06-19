@@ -12,6 +12,63 @@
         style="max-height: 600px; object-fit: contain; background: #f0f0f0"
       />
     </div>
+
+    <!-- Comments -->
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-body">
+        <h5 class="mb-3">
+          <i class="bi bi-chat-left-text"></i>
+          Comments ({{ comments.count }})
+        </h5>
+
+        <!-- Comment Form -->
+        {% if user.is_authenticated %}
+        <form method="POST" class="mb-4">
+          {% csrf_token %}
+          {{ form.body }}
+          <button type="submit" class="btn btn-primary mt-2">
+            <i class="bi bi-send"></i> Post Comment
+          </button>
+        </form>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+          <a href="{% url 'login' %}" class="alert-link">Sign in</a>
+          to leave a comment.
+        </div>
+        {% endif %}
+
+        <!-- Comment List -->
+        {% for comment in comments %}
+        <div class="d-flex mb-3" style="border-top: 1px solid #eee; padding-top: 1rem">
+          <i
+            class="bi bi-person-circle"
+            style="font-size: 2rem; color: #764ba2; margin-right: 0.75rem"
+          ></i>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center">
+              <strong>{{ comment.author.username }}</strong>
+              <small class="text-muted">{{ comment.created_at|date:"M d, Y \a\t g:i A" }}</small>
+            </div>
+            <p class="mb-1" style="white-space: pre-wrap">{{ comment.body }}</p>
+            {% if user == comment.author or user == photo.owner %}
+            <form
+              method="POST"
+              action="{% url 'comment-delete' comment.pk %}"
+              onsubmit="return confirm('Delete this comment?');"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                <i class="bi bi-trash"></i> Delete
+              </button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No comments yet. Be the first to comment!</p>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 
   <!-- Info Panel -->
