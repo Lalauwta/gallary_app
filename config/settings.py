@@ -19,10 +19,17 @@ ALLOWED_HOSTS = [
 # CSRF Configuration
 _default_csrf = 'https://gallaryapp-production.up.railway.app,http://localhost:8000,http://127.0.0.1:8000'
 CSRF_TRUSTED_ORIGINS = [
-    x.strip()
+    # rstrip('/') guards against a trailing slash in the env var, which would
+    # otherwise fail Django's exact-match origin check and 403 every POST.
+    x.strip().rstrip('/')
     for x in os.environ.get('CSRF_TRUSTED_ORIGINS', _default_csrf).split(',')
     if x.strip()
 ]
+
+# Railway (and most PaaS) terminate TLS at the proxy and forward to Gunicorn as
+# plain HTTP. Without this, request.is_secure() is always False, which weakens
+# CSRF origin verification and blocks secure cookies. Trust Railway's header.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 import dj_database_url
 
