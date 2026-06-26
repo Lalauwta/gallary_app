@@ -129,8 +129,8 @@
         <p class="text-muted mb-0 small">Likes</p>
       </div>
       <div class="col-6">
-        <h5 class="mb-0">{{ photo.get_upload_date_display }}</h5>
-        <p class="text-muted mb-0 small">Recently</p>
+        <h5 class="mb-0">{{ photo.uploaded_at|timesince }}</h5>
+        <p class="text-muted mb-0 small">ago</p>
       </div>
     </div>
 
